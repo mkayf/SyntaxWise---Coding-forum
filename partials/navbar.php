@@ -1,11 +1,16 @@
 <?php
-
+    include 'dbconnection.php';
     $logged_in = false;
     if(isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true){
       // echo $_SESSION['username'];
       $logged_in = true;
-  }
+    } 
 
+    // linking threadlist in navbar
+    $SQL = "SELECT * FROM `categories`";
+    $result = mysqli_query($connection, $SQL);
+
+    
 ?>
 
 
@@ -18,26 +23,24 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link" aria-current="page" href="#">Home</a>
+          <a class="nav-link" aria-current="page" href="/syntaxwise">Home</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="#">About</a>
-        </li>
+        </li> 
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             Categories
           </a>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="#">HTML</a></li>
-            <li><a class="dropdown-item" href="#">CSS</a></li>
-            <li><a class="dropdown-item" href="#">JavaScript</a></li>
-            <li><a class="dropdown-item" href="#">Python</a></li>
-            <li><a class="dropdown-item" href="#">PHP</a></li>
-            <li><a class="dropdown-item" href="#">C</a></li>
-            <li><a class="dropdown-item" href="#">C++</a></li>
-            <li><a class="dropdown-item" href="#">C#</a></li>
-            <li><a class="dropdown-item" href="#">Java</a></li>
-            <li><a class="dropdown-item" href="#">React.js</a></li>
+          <!-- displaying all the category links -->
+           <?php
+            while($row = mysqli_fetch_assoc($result)){
+            echo '<li><a class="dropdown-item" href="/syntaxwise/threadlist.php?category-ID='. $row['cat_ID'] .'">'. $row['cat_title'] .'</a></li>';
+            }
+           ?>
+            
+
             <li>
               <hr class="dropdown-divider">
             </li>

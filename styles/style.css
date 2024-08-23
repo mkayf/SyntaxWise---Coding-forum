@@ -65,10 +65,74 @@
     margin: 0 auto;
 }
 
+/* threadlist page styling goes here */
+
+.jumbotron-category{
+    background-color: #ebeaea;
+    border-radius: 20px;
+}
+
+.post-thread-container{
+    background-color: #ebeaea;
+    padding: 48px !important;
+    border-radius: 20px;
+}
+
+.post-thread-container form div{
+    margin: 20px 0;
+}
+
+.post-thread-container #thread-title{
+    width: 500px;
+    padding: 5px;
+    outline: transparent;
+}
+
+
+/* Thread page styling goes here */
+
+.thread-part{
+    background-color: #ebeaea;
+    border-radius: 20px;
+    padding: 48px !important;
+}
+
+.thread-part .thread-date, .thread-poster{
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.thread-textarea{
+    border-radius: 12px;
+    outline: transparent;
+    /* border: none; */
+    padding: 5px;
+    width: 500px;
+}
+
 /* media queries */
 
 @media (max-width: 992px){
     .auth-btns{
         margin: 15px auto;
+    }
+}
+
+@media (max-width: 768px){
+    .thread-textarea{
+        width: 400px
+    }
+}
+
+@media (max-width: 576px){
+    .thread-part{
+        padding: 30px 15px !important;
+    }
+    .thread-textarea{
+        width: 100%;
+    }
+    .thread-part .add-comment{
+        width: 100% ;
+        padding: 8px !important;
     }
 }

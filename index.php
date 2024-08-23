@@ -73,7 +73,7 @@
                     <div class='card-body'>
                         <h5 class='card-title'>". $row['cat_title'] ."</h5>
                         <p class='card-text'>". substr($row['cat_desc'], 0, 90) ."...</p>
-                        <a href='#' class='btn btn-primary btn-sm'>Explore Category</a>
+                        <a href='/syntaxwise/threadlist.php?category-ID=". $row['cat_ID'] ."' class='btn btn-primary btn-sm'>Explore Category</a>
                     </div>
                 </div>      
                         ";
