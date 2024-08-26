@@ -1,8 +1,20 @@
 <?php
   include '../partials/dbconnection.php';
 
+  // Get threadlist URL and thread URL to go back to the post thread section after login 
+  if(isset($_GET['category-path'])){
+    $postThreadURL = $_GET['category-path'];
+  }
+
+  if(isset($_GET['thread-path'])){
+    $postCommentURL = $_GET['thread-path'];
+  }
+
   $loginFailed = false;
   $loginMsg = '';
+
+
+  // simple login without any URL parameters passing
   if($_SERVER['REQUEST_METHOD'] == 'POST'){
     $username = $_POST['username'];
     $password = $_POST['password'];
@@ -20,7 +32,15 @@
             $_SESSION['logged_in'] = true;
             $_SESSION['username'] = $row['username'];
             $loginFailed = false;
-            header('location:../index.php');
+            if(isset($postThreadURL)){
+              header("location: $postThreadURL");
+            }
+            else if(isset($postCommentURL)){
+              header("location: $postCommentURL");
+            }
+            else{
+              header('location:../index.php');
+            }
         }
         else{
           $loginFailed = true;

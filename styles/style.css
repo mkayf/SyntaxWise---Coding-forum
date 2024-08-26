@@ -7,6 +7,10 @@
     font-family: "Poppins", sans-serif;
 }
 
+html{
+    scroll-behavior:smooth;
+}
+
 /* Navbar styling goes here */
 
 .nav-item .nav-link{
@@ -70,6 +74,8 @@
 .jumbotron-category{
     background-color: #ebeaea;
     border-radius: 20px;
+    padding: 48px !important;
+    margin: 48px auto !important;
 }
 
 .post-thread-container{
@@ -110,6 +116,10 @@
     width: 500px;
 }
 
+.thread-part .add-comment{
+    margin-top: 4px !important;
+}
+
 /* media queries */
 
 @media (max-width: 992px){
@@ -119,19 +129,23 @@
 }
 
 @media (max-width: 768px){
-    .thread-textarea{
-        width: 400px
-    }
-}
-
-@media (max-width: 576px){
-    .thread-part{
-        padding: 30px 15px !important;
+    .post-thread-container #thread-title{
+        width: 100%;
     }
     .thread-textarea{
         width: 100%;
     }
-    .thread-part .add-comment{
+}
+
+@media (max-width: 576px){
+    .thread-part, .post-thread-container, .jumbotron-category{
+        padding: 30px 15px !important;
+        border-radius: 0;
+    }
+    .thread-textarea{
+        width: 100%;
+    }
+    .add-comment, .post-thread-btn{
         width: 100% ;
         padding: 8px !important;
     }

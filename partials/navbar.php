@@ -39,8 +39,6 @@
             echo '<li><a class="dropdown-item" href="/syntaxwise/threadlist.php?category-ID='. $row['cat_ID'] .'">'. $row['cat_title'] .'</a></li>';
             }
            ?>
-            
-
             <li>
               <hr class="dropdown-divider">
             </li>
@@ -60,13 +58,14 @@
           if($logged_in){
             echo '
               <a href="/Syntaxwise/auth/logout.php"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+              <a href="#"><i class="fa-solid fa-user"></i> '. $_SESSION['username'] .'</a>
             ';    
           }
           else{
-            echo '<a href="/Syntaxwise/auth/login.php"><i class="fa-solid fa-right-from-bracket"></i> Login</a>';
+            echo '<a href="/Syntaxwise/auth/login.php"><i class="fa-solid fa-right-from-bracket"></i> Login</a>
+            <a href="/Syntaxwise/auth/signup.php"><i class="fa-solid fa-user"></i> Signup</a>';
           }
         ?>
-        <a href="/Syntaxwise/auth/signup.php"><i class="fa-solid fa-user"></i> Signup</a>
       </div>
     </div>
   </div>

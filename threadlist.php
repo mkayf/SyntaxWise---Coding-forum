@@ -2,18 +2,14 @@
     session_start();
     require './partials/dbconnection.php';    
 
-    $thread_posted = false;
 
  // Getting ID of the category to display corresponding category data.
  if(isset($_GET['category-ID'])){
     $category_ID = $_GET['category-ID'];
 }
 else{
-    // To display random category from db if user directly opens threadlist.php
-    $SQL = "SELECT * FROM `categories`";
-    $result = mysqli_query($connection, $SQL);
-    $totalCategories = mysqli_num_rows($result);
-    $category_ID = rand(1, $totalCategories);
+    // To display first category from db if user directly opens threadlist.php
+    $category_ID = 1;
 }
 
 
@@ -27,6 +23,8 @@ while($row = mysqli_fetch_assoc($result)){
 
 
  // Getting user ID of the logged in user:
+ $thread_posted = false;
+ $thread_empty = false;
 if(isset($_SESSION['logged_in']) && !empty($_SESSION['username'])){
     $username = $_SESSION['username'];
     $SQL = "SELECT user_ID from `users` WHERE username = '$username'";
@@ -39,12 +37,18 @@ if(isset($_SESSION['logged_in']) && !empty($_SESSION['username'])){
     if($_SERVER['REQUEST_METHOD'] == 'POST'){
         $thread_title = $_POST['thread-title'];
         $thread_desc = $_POST['thread-desc'];
+      if(!empty($thread_title) && !empty($thread_desc)){
         $SQL = "INSERT INTO threads (thread_title, thread_desc, thread_user_ID, thread_cat_ID) VALUES ('$thread_title', '$thread_desc', $user_ID, $category_ID)";
         $result = mysqli_query($connection, $SQL);
         
         if($result){
             $thread_posted = true;
         }
+      }  
+      else{
+        $thread_empty = true;
+      }
+        
     }
 }
     
@@ -81,7 +85,16 @@ if(isset($_SESSION['logged_in']) && !empty($_SESSION['username'])){
     if($thread_posted){
         echo '
         <div class="alert alert-success alert-dismissible fade show" role="alert">
-         <strong>Thread Posted!</strong> Your thread posted successfully! Check below.
+         <strong>Thread Posted!</strong> Your thread posted successfully! Please wait for the community to respond.
+         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>  
+        ';
+    }
+
+    if($thread_empty){
+        echo '
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+         <strong>Thread Empty! </strong> Thread title and description cannot be empty.
          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>  
         ';
@@ -91,7 +104,7 @@ if(isset($_SESSION['logged_in']) && !empty($_SESSION['username'])){
 
 
     <!-- hero for category -->
-    <div class="container my-5 jumbotron-category p-5">
+    <div class="container jumbotron-category">
         <h1>Welcome to <?php echo $category_title; ?> forums</h1>
         <p><?php echo $category_desc; ?></p>
         <hr>
@@ -114,22 +127,21 @@ if(isset($_SESSION['logged_in']) && !empty($_SESSION['username'])){
     <?php
     // show post thread container only if user is logged in
     if(isset($_SESSION['logged_in']) && !empty($_SESSION['username'])){
-        
         echo '
-            <div class="container post-thread-container">
+            <div class="container post-thread-container" id="post-thread">
         <div class="row">
             <div class="col col-12 col-md-12 col-lg-6">
             <h2>Post a thread</h2>
-        <form method="POST">
+        <form method="POST" action="'. $_SERVER['REQUEST_URI'] . '">
             <div class="d-flex flex-column align-items-start">
                 <label for="thread-title">Thread title</label>
-                <input type="text" name="thread-title" id="thread-title" maxlength="200">
+                <input type="text" name="thread-title" id="thread-title" maxlength="200" required>
             </div>
             <div class="d-flex flex-column align-items-start">
                 <label for="thread-desc">Thread Description</label>
-                <textarea name="thread-desc" id="thread-desc" rows="4" class="thread-textarea"></textarea>
+                <textarea name="thread-desc" id="thread-desc" rows="4" class="thread-textarea" required></textarea>
             </div>
-            <button class="btn btn-sm btn-primary" type="submit">Post thread</button>
+            <button class="btn btn-sm btn-primary post-thread-btn" type="submit">Post thread</button>
         </form>
             </div>
             <div class="col col-12 col-md-12 col-lg-6 d-flex justify-content-center align-items-center ">
@@ -143,7 +155,7 @@ if(isset($_SESSION['logged_in']) && !empty($_SESSION['username'])){
         echo '
         <div class="container">
         <p>Please login to post thread. Click the button below to login.</p>
-        <a href="/syntaxwise/auth/login.php" class="btn btn-primary btn-sm">Login</a>
+        <a href="/syntaxwise/auth/login.php?category-path='. $_SERVER['REQUEST_URI'] .'#post-thread" class="btn btn-primary btn-sm">Login</a>
         </div>
         ';
     }
@@ -163,7 +175,7 @@ if(isset($_SESSION['logged_in']) && !empty($_SESSION['username'])){
 
             if(mysqli_num_rows($result) == 0){
                 echo '
-                <div class="d-flex justify-content-center align-items-center flex-column my-5">
+                <div class="my-3">
                 <p>No threads yet, Be the first one to post thread on this category :)</p>
                 </div>';
             }
@@ -176,10 +188,10 @@ if(isset($_SESSION['logged_in']) && !empty($_SESSION['username'])){
                             <img src="./assets/images/userdefault.png" alt="user image" width="34px">
                         </div>
                         <div class="flex-grow-1 ms-3">
-                            <a href="/syntaxwise/thread.php?thread-ID='. $row['thread_ID'] .'" class="text-dark text-decoration-none"><h6>'. $row['thread_title'] .'</h6></a>
-                            <p>'. substr($row['thread_desc'], 0, 150) .'... </p>
+                            <a href="/syntaxwise/thread.php?thread-ID='. $row['thread_ID'] .'" class="text-dark text-decoration-none"><h6>'. htmlspecialchars($row['thread_title']) .'</h6></a>
+                            <p>'. htmlspecialchars(substr($row['thread_desc'], 0, 150)) .'... </p>
                             <div style="margin-top: -12px;">
-                             <a href="/syntaxwise/thread.php?thread_ID='. $row['thread_ID'] .'" style="display: block; font-size: 0.8rem; margin-bottom: 0;">Read more</a>
+                             <a href="/syntaxwise/thread.php?thread-ID='. $row['thread_ID'] .'" style="display: block; font-size: 0.8rem; margin-bottom: 0;">Read more</a>
                             </div>
                         </div>
                     </div>

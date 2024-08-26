@@ -1,8 +1,6 @@
 <?php
     session_start();
     require './partials/dbconnection.php';    
-
-
 ?>
 
 <!doctype html>
@@ -40,8 +38,29 @@
                     <p>Our tech forum is a space where developers of all levels come together to share knowledge, solve
                         problems, and grow their skills. Whether you're a beginner or a pro, you'll find valuable
                         discussions, tutorials, and resources to help you on your coding journey.</p>
-                    <div class="hero-btns">
-                        <a href="#" class="btn btn-primary btn-sm">Post Thread</a>
+                    <div class="hero-btns d-flex gap-2 align-items-center">
+
+                    <?php
+                    // linking threadlist in navbar
+                    $SQL = "SELECT * FROM `categories`";
+                    $result = mysqli_query($connection, $SQL);
+                    ?>
+                    <div class="dropdown">
+                        <a class="btn btn-primary btn-sm dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Post thread
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" class="dropdown-item">Select Category</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <!-- displaying all the category links -->
+                            <?php
+                                while($row = mysqli_fetch_assoc($result)){
+                                echo '<li><a class="dropdown-item" href="/syntaxwise/threadlist.php?category-ID='. $row['cat_ID'] .'">'. $row['cat_title'] .'</a></li>';
+                                }
+                            ?>
+                        </ul>
+                        </div>
+
                         <a href="#" class="btn btn-secondary btn-sm">About us</a>
                     </div>
                 </div>
@@ -72,7 +91,7 @@
                     <img src='". $row['category_img'] ."' class='card-img-top' alt='category-image'>
                     <div class='card-body'>
                         <h5 class='card-title'>". $row['cat_title'] ."</h5>
-                        <p class='card-text'>". substr($row['cat_desc'], 0, 90) ."...</p>
+                        <p class='card-text'>". substr($row['cat_desc'], 0, 50) ."...</p>
                         <a href='/syntaxwise/threadlist.php?category-ID=". $row['cat_ID'] ."' class='btn btn-primary btn-sm'>Explore Category</a>
                     </div>
                 </div>      
